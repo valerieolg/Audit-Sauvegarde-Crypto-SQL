@@ -45,8 +45,7 @@ Audit-Sauvegarde-Crypto-SQL/
 │
 ├── README.md                                   
 │
-├── docs/
-│   └── TP2.docx                                # Rapport complet du projet
+├── TP2.docx                                    # Rapport complet du projet
 │
 └── scripts/
     ├── sql/
