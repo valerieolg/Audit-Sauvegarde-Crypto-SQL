@@ -4,15 +4,6 @@
 **INFRASTRUCTURE INFORMATIQUE ET CYBERSÉCURITÉ (LEA.3D)**  
 **420-3GS-BB GESTION DE SERVEURS DE BASES DE DONNÉES**  
 
-**Enseignant:** RAOUF BABARI  
-
-**Étudiants:**  
-- ERIC DE CELLES  
-- VALÉRIE OUELLET  
-- WILLIAM BOURBONNIÈRE  
-
-**Date:** 30 avril 2026
-
 ---
 
 ## Table des matières
@@ -57,37 +48,18 @@ Audit-Sauvegarde-Crypto-SQL/
 ├── docs/
 │   └── TP2.docx                                # Rapport complet du projet
 │
-├── scripts/
-│   ├── sql/
-│   │   ├── 01_creation_base.sql                # Création BD, tables et données
-│   │   ├── 02_roles_profils.sql                # Rôles, utilisateurs et profils
-│   │   ├── 03_audit.sql                        # Politiques d'audit unifié
-│   │   ├── 04_crypto.sql                       # Chiffrement DBMS_CRYPTO
-│   │   └── 05_sauvegarde.sql                   # Backup/restore Data Pump
-│   │
-│   └── backup/
-│       ├── export_script.sh                    # Script de sauvegarde automatique
-│       └── import_script.sh                    # Script de restauration automatique
-│
-├── screenshots/
-│   ├── 01_creation_departements.png
-│   ├── 02_insertion_donnees.png
-│   ├── 03_verification_roles.png
-│   ├── 04_profil_limite.png
-│   ├── 05_policies_audit.png
-│   ├── 06_logs_connexion.png
-│   ├── 07_logs_employes.png
-│   ├── 08_logs_projets.png
-│   ├── 09_package_crypto.png
-│   ├── 10_donnees_chiffrees.png
-│   ├── 11_dechiffrement.png
-│   ├── 12_test_chef_projet.png
-│   ├── 13_export_datapump.png
-│   ├── 14_tables_apres_import.png
-│   └── 15_validation_restauration.png
-│
-└── logs/
-    └── (fichiers de log générés lors des opérations)
+└── scripts/
+    ├── sql/
+    │   ├── 01_creation_base.sql                # Création BD, tables et données
+    │   ├── 02_roles_profils.sql                # Rôles, utilisateurs et profils
+    │   ├── 03_audit.sql                        # Politiques d'audit unifié
+    │   ├── 04_crypto.sql                       # Chiffrement DBMS_CRYPTO
+    │   └── 05_sauvegarde.sql                   # Backup/restore Data Pump
+    │
+    └── backup/
+         ├── export_script.sh                    # Script de sauvegarde automatique
+         └── import_script.sh                    # Script de restauration automatique
+
 ```
 
 ---
@@ -444,7 +416,6 @@ unzip main.zip
 | `scripts/sql/05_sauvegarde.sql` | Script de sauvegarde/restauration |
 | `scripts/backup/export_script.sh` | Script shell de sauvegarde automatique |
 | `scripts/backup/import_script.sh` | Script shell de restauration automatique |
-| `screenshots/` | Captures d'écran de toutes les exécutions |
 
 ---
 
@@ -476,4 +447,3 @@ Ce projet a été réalisé dans le cadre du cours **420-3GS-BB Gestion de serve
 
 ---
 *Document généré le 30 avril 2026*
-```
