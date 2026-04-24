@@ -1,0 +1,152 @@
+--=============================
+-- 4. Chiffrement de Table Projet avec DBMS_CRYPTO
+--=============================
+
+-- Donner à ENTREPRISEDB le droit d'exécuter DBMS_CRYPTO (connecté en SYS)
+GRANT EXECUTE ON DBMS_CRYPTO TO ENTREPRISEDB;
+
+ALTER SESSION SET CURRENT_SCHEMA = ENTREPRISEDB;
+
+-- Créer la table principale
+CREATE TABLE PROJETS_DBMS_CRYPTO (
+  PROJ_ID NUMBER(5) PRIMARY KEY,
+  NOM_PROJET VARCHAR2(256 byte), 
+  DATE_DEBUT VARCHAR2(50),
+  DATE_FIN VARCHAR2(50),
+  STATUT VARCHAR2(50),
+  DEP_ID VARCHAR2(50)
+);
+
+-- Créer la table des secrets
+CREATE TABLE PROJETS_SECRETS (
+  PROJ_ID NUMBER(5) PRIMARY KEY,
+  SWORDFISH_CHIFFRE RAW(256)
+);
+
+-- Créer le package de chiffrement/déchiffrement
+CREATE OR REPLACE PACKAGE BODY PKG_PROJETS_CRYPTO AS
+  main_password  VARCHAR2(16) := 'CleSecreteProjet';
+  free_password  VARCHAR2(20) := 'AccesAutorise';
+  enc_mode NUMBER := DBMS_CRYPTO.ENCRYPT_AES128 +
+                     DBMS_CRYPTO.CHAIN_CBC +
+                     DBMS_CRYPTO.PAD_PKCS5;
+
+  FUNCTION CHIFFRER_NOM (
+    p_nom       IN VARCHAR2,
+    p_proj_id   IN NUMBER,
+    p_unlock    IN VARCHAR2 DEFAULT NULL
+  ) RETURN VARCHAR2 AS
+    swordfish         RAW(256);
+    swordfish_chiffre RAW(256);
+    v_count           NUMBER;
+  BEGIN
+    IF (p_unlock IS NULL OR p_unlock != free_password) THEN
+      RETURN NULL;
+    END IF;
+    
+    SELECT COUNT(*) INTO v_count FROM PROJETS_SECRETS WHERE PROJ_ID = p_proj_id;
+    
+    IF v_count = 0 THEN
+      swordfish := DBMS_CRYPTO.RANDOMBYTES(16);
+      swordfish_chiffre := DBMS_CRYPTO.ENCRYPT(
+        swordfish,
+        enc_mode,
+        UTL_I18N.STRING_TO_RAW(main_password,'AL32UTF8')
+      );
+      INSERT INTO PROJETS_SECRETS VALUES (p_proj_id, swordfish_chiffre);
+      COMMIT;
+    ELSE
+      SELECT DBMS_CRYPTO.DECRYPT(
+               SWORDFISH_CHIFFRE,
+               enc_mode,
+               UTL_I18N.STRING_TO_RAW(main_password,'AL32UTF8')
+             )
+      INTO swordfish
+      FROM PROJETS_SECRETS
+      WHERE PROJ_ID = p_proj_id;
+    END IF;
+
+    RETURN UTL_RAW.CAST_TO_VARCHAR2(
+      UTL_ENCODE.BASE64_ENCODE(
+        DBMS_CRYPTO.ENCRYPT(
+          UTL_I18N.STRING_TO_RAW(p_nom,'AL32UTF8'),
+          enc_mode,
+          swordfish
+        )
+      )
+    );
+  END CHIFFRER_NOM;
+
+  FUNCTION DECHIFFRER_NOM (
+    p_nom IN VARCHAR2,
+    p_proj_id IN NUMBER,
+    p_unlock IN VARCHAR2 DEFAULT NULL
+  ) RETURN VARCHAR2 AS
+    swordfish RAW(256);
+  BEGIN
+    IF (p_unlock IS NULL OR p_unlock != free_password) THEN
+      RETURN NULL;
+    END IF;
+    
+    SELECT DBMS_CRYPTO.DECRYPT(
+             SWORDFISH_CHIFFRE,
+             enc_mode,
+             UTL_I18N.STRING_TO_RAW(main_password,'AL32UTF8')
+           )
+    INTO swordfish
+    FROM PROJETS_SECRETS
+    WHERE PROJ_ID = p_proj_id;
+
+    RETURN UTL_I18N.RAW_TO_CHAR(
+      DBMS_CRYPTO.DECRYPT(
+        UTL_ENCODE.BASE64_DECODE(UTL_RAW.CAST_TO_RAW(p_nom)),
+        enc_mode,
+        swordfish
+      ),
+      'AL32UTF8'
+    );
+  END DECHIFFRER_NOM;
+
+END PKG_PROJETS_CRYPTO;
+/
+
+-- Créer toutes les clés pour chaque projet
+BEGIN
+  FOR rec IN (SELECT PROJ_ID FROM PROJETS) LOOP
+    BEGIN
+      INSERT INTO PROJETS_SECRETS (PROJ_ID, SWORDFISH_CHIFFRE)
+      VALUES (rec.PROJ_ID, DBMS_CRYPTO.ENCRYPT(
+        DBMS_CRYPTO.RANDOMBYTES(16),
+        DBMS_CRYPTO.ENCRYPT_AES128 + DBMS_CRYPTO.CHAIN_CBC + DBMS_CRYPTO.PAD_PKCS5,
+        UTL_I18N.STRING_TO_RAW('CleSecreteProjet','AL32UTF8')
+      ));
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        NULL;
+    END;
+  END LOOP;
+  COMMIT;
+END;
+/
+
+-- Insérer les données chiffrées
+INSERT INTO PROJETS_DBMS_CRYPTO
+SELECT
+  PROJ_ID,
+  PKG_PROJETS_CRYPTO.CHIFFRER_NOM(NOM_PROJET, PROJ_ID, 'AccesAutorise'),
+  PKG_PROJETS_CRYPTO.CHIFFRER_NOM(TO_CHAR(DATE_DEBUT,'YYYY-MM-DD'), PROJ_ID, 'AccesAutorise'),
+  PKG_PROJETS_CRYPTO.CHIFFRER_NOM(TO_CHAR(DATE_FIN,'YYYY-MM-DD'), PROJ_ID, 'AccesAutorise'),
+  PKG_PROJETS_CRYPTO.CHIFFRER_NOM(STATUT, PROJ_ID, 'AccesAutorise'),
+  PKG_PROJETS_CRYPTO.CHIFFRER_NOM(DEP_ID, PROJ_ID, 'AccesAutorise')
+FROM PROJETS;
+
+COMMIT;
+
+-- Accorder les accès
+GRANT EXECUTE ON ENTREPRISEDB.PKG_PROJETS_CRYPTO TO GESTIONNAIRE_PROJET;
+GRANT SELECT ON ENTREPRISEDB.PROJETS_DBMS_CRYPTO TO GESTIONNAIRE_PROJET;
+GRANT SELECT ON ENTREPRISEDB.PROJETS_SECRETS TO GESTIONNAIRE_PROJET;
+
+GRANT EXECUTE ON ENTREPRISEDB.PKG_PROJETS_CRYPTO TO GESTIONNAIRE_DEPARTEMENT;
+GRANT SELECT ON ENTREPRISEDB.PROJETS_DBMS_CRYPTO TO GESTIONNAIRE_DEPARTEMENT;
+GRANT SELECT ON ENTREPRISEDB.PROJETS_SECRETS TO GESTIONNAIRE_DEPARTEMENT;
