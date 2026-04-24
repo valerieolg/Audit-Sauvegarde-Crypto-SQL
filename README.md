@@ -415,7 +415,7 @@ unzip main.zip
 ## Liens utiles
 
 - [Documentation Oracle DBMS_CRYPTO](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_CRYPTO.html)
-- [Oracle Unified Auditing Guide](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/introduction-to-unified-auditing.html)
+- [Oracle Unified Auditing Guide](https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/AUDIT-Unified-Auditing.html)
 - [Oracle Data Pump Utility](https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump-overview.html)
 
 ---
