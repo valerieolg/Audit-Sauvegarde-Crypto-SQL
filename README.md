@@ -1,4 +1,4 @@
-# TP2 - Audit, Sauvegarde et Crypto SQL
+# Audit, Sauvegarde et Crypto SQL
 
 **Cégep Bois-de-Boulogne**  
 **INFRASTRUCTURE INFORMATIQUE ET CYBERSÉCURITÉ (LEA.3D)**  
