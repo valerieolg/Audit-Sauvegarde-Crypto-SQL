@@ -1,7 +1,5 @@
 # Audit, Sauvegarde et Crypto SQL
 
----
-
 ## Table des matières
 
 1. [Description du projet](#description-du-projet)
