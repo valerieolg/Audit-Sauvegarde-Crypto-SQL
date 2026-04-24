@@ -460,9 +460,9 @@ unzip main.zip
 
 | Nom | Rôle |
 |-----|------|
-| ERIC DE CELLES | Développeur principal |
-| VALÉRIE OUELLET | Documentation et tests |
-| WILLIAM BOURBONNIÈRE | Scripts de sauvegarde |
+| ERIC DE CELLES | Développeur |
+| VALÉRIE OUELLET | Développeur |
+| WILLIAM BOURBONNIÈRE | Développeur |
 
 ---
 
