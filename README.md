@@ -424,19 +424,10 @@ unzip main.zip
 
 | Nom | Rôle |
 |-----|------|
-| ERIC DE CELLES | Développeur |
-| VALÉRIE OUELLET | Développeur |
-| WILLIAM BOURBONNIÈRE | Développeur |
+| Eric De Celles | Développeur |
+| Valerie Ouellet | Développeur |
+| William Bourbonnière | Développeur |
 
 ---
-
-## Licence
 
 Ce projet a été réalisé dans le cadre du cours **420-3GS-BB Gestion de serveurs de bases de données** au Cégep Bois-de-Boulogne.
-
----
-
-**© 2026 - Tous droits réservés**
-
----
-*Document généré le 30 avril 2026*
