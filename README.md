@@ -1,9 +1,5 @@
 # Audit, Sauvegarde et Crypto SQL
 
-**Cégep Bois-de-Boulogne**  
-**INFRASTRUCTURE INFORMATIQUE ET CYBERSÉCURITÉ (LEA.3D)**  
-**420-3GS-BB GESTION DE SERVEURS DE BASES DE DONNÉES**  
-
 ---
 
 ## Table des matières
